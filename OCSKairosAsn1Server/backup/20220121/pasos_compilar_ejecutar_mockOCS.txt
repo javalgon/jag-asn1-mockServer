@@ -1,0 +1,10 @@
+
+1) Compilar las clases:
+
+javac -cp ../asn1bean/build/libs-all/asn1bean-1.13.0.jar:../asn1bean/bin/kairos.jar OCSKairosASN1Server.java
+
+2) Ejecutar las clases:
+
+java -cp ../asn1bean/build/libs-all/asn1bean-1.13.0.jar:../asn1bean/bin/kairos.jar:. OCSKairosASN1Server 8999
+
+

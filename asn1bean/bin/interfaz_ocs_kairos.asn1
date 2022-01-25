@@ -1,0 +1,78 @@
+KAIROS-OCS DEFINITIONS ::=
+BEGIN
+
+--bDebitKReq OBJECT-TYPE
+--SYNTAX	BDebitKReq
+--ACCESS	read-write
+--STATUS	mandatory
+--::= 332
+
+--bDebitKRes OBJECT-TYPE
+--SYNTAX	BDebitKRes
+--ACCESS	read-write
+--STATUS	mandatory
+--::= 333
+
+--rejectKRes OBJECT-TYPE
+--SYNTAX	RejectKRes		 
+--ACCESS	read-write
+--STATUS	mandatory
+--::= 334
+
+AgregatedId ::= PrintableString (SIZE(1..12))
+
+MerchantId ::= PrintableString (SIZE(1..12)) 
+
+DateTimeStamp ::= NumericString(SIZE(17))
+
+IpAddress ::= OCTET STRING (SIZE (5..17))
+
+McMsisdn ::= OCTET STRING (SIZE(3..20))
+	
+ProfileType ::= PrintableString(SIZE(1..10))
+
+ReleaseCause ::= PrintableString(SIZE(2))
+
+TxnId ::= PrintableString (SIZE(1..62))
+
+InterfazContenidosKairosSDP ::= SEQUENCE
+{
+requestId [1] IMPLICIT INTEGER,
+msgType [2] IMPLICIT INTEGER,
+msg ANY DEFINED BY msgType
+}
+
+BDebitKReq ::= SEQUENCE { 
+
+subscriberId       	[1] IMPLICIT McMsisdn, 
+subscriberIP       	[2] IMPLICIT IpAddress OPTIONAL,
+mediatorId         	[3] IMPLICIT INTEGER, 
+serviceProviderId  	[4] IMPLICIT MerchantId,
+contentId          	[5] IMPLICIT AgregatedId,
+contentType        	[6] IMPLICIT INTEGER, 
+unitsRequested     	[7] IMPLICIT INTEGER,
+eventUniqueIdentifier 	[8] IMPLICIT TxnId,
+chargingTime       	[9] IMPLICIT DateTimeStamp,
+profileType 			[10] IMPLICIT ProfileType,
+retryFlag			[11] IMPLICIT BOOLEAN OPTIONAL, 
+purchaseEventUniqueId	[12] IMPLICIT TxnId OPTIONAL,
+purchaseChargingTime 	[13] IMPLICIT DateTimeStamp OPTIONAL,
+chargingType			[14] IMPLICIT ENUMERATED {purchase(0), renewal(1)} OPTIONAL, 
+additionalInfo 		[15] IMPLICIT PrintableString (SIZE(1..1000)) OPTIONAL
+}
+
+BDebitKRes ::= SEQUENCE
+{
+subscriberId		 [1] IMPLICIT McMsisdn,
+unitsCharged		 [2] IMPLICIT INTEGER OPTIONAL,
+effectiveChargingTime [3] IMPLICIT DateTimeStamp OPTIONAL
+}
+
+RejectKRes ::= SEQUENCE
+{
+subscriberId    [1] IMPLICIT McMsisdn,
+releaseCause    [2] IMPLICIT ReleaseCause,
+comment         [3] IMPLICIT PrintableString (SIZE(1..50)) OPTIONAL
+}
+
+END
