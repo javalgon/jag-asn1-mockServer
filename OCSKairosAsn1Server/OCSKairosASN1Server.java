@@ -72,16 +72,20 @@ class OCSKairosClientServiceThread implements Runnable{
                 osBer.close();
                 ostmp.close();
 
-				// Creamos el flujo de salida a partir del socket donde escribiremos la trama ASN1 codificada de respuesta
-				DataOutputStream os = new DataOutputStream (new BufferedOutputStream(socketRequest.getOutputStream()));    			
-                int largoRes = respuesta.code.length;
-				os.write(largoRes >> 8);
-				os.write(largoRes & 0xff);                        
-				os.write(osBer.getArray());
-				os.flush();
+		// Creamos el flujo de salida a partir del socket donde escribiremos la trama ASN1 codificada de respuesta
+		DataOutputStream os = new DataOutputStream (new BufferedOutputStream(socketRequest.getOutputStream()));    			
+                //int largoRes = respuesta.code.length;
+		//os.write(largoRes >> 8);
+		//os.write(largoRes & 0xff);                        
+		byte[] largoRes = new byte[2];
+		largoRes[0] = (byte) (respuesta.code.length >> 8);
+		largoRes[1] = (byte) (respuesta.code.length & 0xFF);				
+		os.write(largoRes);
+		os.write(osBer.getArray());
+		os.flush();
             } else {
-				System.out.println("ERROR: peticióecibida demasiado grande.");
-			}
+			System.out.println("ERROR: peticion recibida demasiado grande.");
+	    }
         }catch(SocketTimeoutException ex) {
             //Aqui se llega cuando se tardan mas de 2 segundos en un bloque
             System.out.println("Se tardan en mandar datos, adios");
