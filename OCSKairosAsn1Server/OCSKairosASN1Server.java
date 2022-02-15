@@ -9,6 +9,7 @@ import com.beanit.asn1bean.ber.ReverseByteArrayOutputStream;
 import com.beanit.asn1bean.ber.types.BerAny;
 import com.beanit.asn1bean.ber.types.BerInteger;
 import com.beanit.asn1bean.ber.types.string.BerPrintableString;
+//import com.beanit.asn1bean.util.HexString;
 
 import kairos.ocs.*;
 
@@ -38,9 +39,9 @@ class OCSKairosClientServiceThread implements Runnable{
                 System.out.println("SERVER: empezando a recibir");                        
                 InterfazContenidosKairosSDP peticion = new InterfazContenidosKairosSDP();				
                 peticion.decode(socketRequest.getInputStream(),true);
-				System.out.println("Peticion.code = " + peticion.code);
+		System.out.println("Peticion.code = " + peticion.code);
                 System.out.println("Peticion recibida = " + peticion);
-				BDebitKReq cobro = new BDebitKReq();
+		BDebitKReq cobro = new BDebitKReq();
                 ReverseByteArrayOutputStream ostmp = new ReverseByteArrayOutputStream(1024);
                 ReverseByteArrayOutputStream osBer = new ReverseByteArrayOutputStream(1024);
                 peticion.getMsg().encode(ostmp);
@@ -54,16 +55,17 @@ class OCSKairosClientServiceThread implements Runnable{
 		System.out.println("SERVER - msisdn leido de la peticion: " + cobro.getSubscriberId());                      
                 BDebitKRes rspCobro = new BDebitKRes();				                
 				//RejectKRes rspCobro = new RejectKRes();
-				//rspCobro.setReleaseCause(new ReleaseCause(new String("-3").getBytes("UTF-8")));				
-				//rspCobro.setComment(new BerPrintableString(new String("Error devuelto por mock-OCS").getBytes("UTF-8")));
+				//rspCobro.setReleaseCause(new ReleaseCause(new String("00").getBytes("UTF-8")));				
+				//rspCobro.setComment(new BerPrintableString(new String("OTHER ERROR").getBytes("UTF-8")));
 		rspCobro.setSubscriberId(cobro.getSubscriberId());                        
                 rspCobro.encode(ostmp,true);
                 rspCobro.code = ostmp.getArray();
                 ostmp.close();
                 System.out.println("SERVER - Respuesta BDebitKRes: " + rspCobro);
+                		//System.out.println("SERVER - Respuesta RejectKRes: " + rspCobro);
                 InterfazContenidosKairosSDP respuesta = new InterfazContenidosKairosSDP();                        
                 respuesta.setRequestId(peticion.getRequestId());
-                respuesta.setMsgType(new BerInteger(333)); //333 para BDebitKRes; 334 para RejectKRes
+                		respuesta.setMsgType(new BerInteger(333)); //333 para BDebitKRes; 334 para RejectKRes
                 respuesta.setMsg(new BerAny(rspCobro.code));
                 System.out.println("SERVER: respuesta -> " + respuesta);
                 respuesta.encode(osBer,true);
@@ -78,8 +80,8 @@ class OCSKairosClientServiceThread implements Runnable{
 		//os.write(largoRes >> 8);
 		//os.write(largoRes & 0xff);                        
 		byte[] largoRes = new byte[2];
-		largoRes[0] = (byte) (respuesta.code.length >> 8);
-		largoRes[1] = (byte) (respuesta.code.length & 0xFF);				
+		largoRes[0] = (byte) ((respuesta.code.length & 0xff00) >> 8);
+		largoRes[1] = (byte) (respuesta.code.length & 0x00ff);				
 		os.write(largoRes);
 		os.write(osBer.getArray());
 		os.flush();

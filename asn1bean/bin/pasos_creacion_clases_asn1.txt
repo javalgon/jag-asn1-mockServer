@@ -3,6 +3,14 @@
 
 ./asn1bean-compiler -f interfaz_ocs_kairos.asn1
 
+Posteriormente, para facilitar su uso se puede cambiar a public el ambito de la variable byte[] code de las siguientes clases/ficheros:
+	BDebitKReq.java
+	BDebitKRes.java
+	InterfazContenidosKairosSDP.java
+	RejectKRes.java
+
+   private byte[] code = null;   ---->   public byte[] code = null;
+
 2) Compilar las clases generadas:
 
 javac -cp ../build/libs-all/asn1bean-1.13.0.jar kairos/ocs/*.java

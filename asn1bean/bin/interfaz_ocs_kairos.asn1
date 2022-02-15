@@ -53,11 +53,11 @@ contentType        	[6] IMPLICIT INTEGER,
 unitsRequested     	[7] IMPLICIT INTEGER,
 eventUniqueIdentifier 	[8] IMPLICIT TxnId,
 chargingTime       	[9] IMPLICIT DateTimeStamp,
-profileType 			[10] IMPLICIT ProfileType,
-retryFlag			[11] IMPLICIT BOOLEAN OPTIONAL, 
+profileType 		[10] IMPLICIT ProfileType,
+retryFlag		[11] IMPLICIT BOOLEAN OPTIONAL, 
 purchaseEventUniqueId	[12] IMPLICIT TxnId OPTIONAL,
 purchaseChargingTime 	[13] IMPLICIT DateTimeStamp OPTIONAL,
-chargingType			[14] IMPLICIT ENUMERATED {purchase(0), renewal(1)} OPTIONAL, 
+chargingType		[14] IMPLICIT ENUMERATED {purchase(0), renewal(1)} OPTIONAL, 
 additionalInfo 		[15] IMPLICIT PrintableString (SIZE(1..1000)) OPTIONAL
 }
 
